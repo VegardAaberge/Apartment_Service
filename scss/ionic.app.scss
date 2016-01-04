@@ -1,0 +1,60 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
+*/
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+
+.imagelist{
+	li{
+		width: 50%;
+		padding: 10px;
+		float: left;
+	}
+}
+
+.fullscreen {
+	img{
+		padding-top: 5px;
+		width: 100%;
+	} 
+} 
+
+.tabTasks{
+	a{
+		margin: 0 2% 0 2%;
+	}
+}
+
+.infoList span{
+	width: 100%;
+	max-width: 500px !important;
+}
+
+button{
+	border-radius: 2px !important;
+}
+
+.banner{
+	margin-bottom: 10px;
+}
+
+.completed{
+	margin: 20px 0;
+}

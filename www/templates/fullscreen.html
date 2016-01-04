@@ -1,0 +1,10 @@
+<ion-view view-title="Completed" data-ng-init="init(2)">
+	<div class="bar bar-header bar-positive header-styling">
+		<button class="button button-icon ion-android-arrow-back" href back-button></button>
+	  	<h1 class="title">Fullscreen</h1>
+	  	<button class="button button-icon ion-ios-home" href home-button></button>
+	</div>
+	<ion-content class="has-header fullscreen">
+		<img ng-click="back()" ng-src="{{img}}">
+	</ion-content>
+</ion-view>

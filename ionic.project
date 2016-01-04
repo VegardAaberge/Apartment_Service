@@ -1,0 +1,12 @@
+{
+  "name": "Apartment Service",
+  "app_id": "no.vegardaaberge.apartment.service",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

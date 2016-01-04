@@ -1,0 +1,28 @@
+<ion-view title="Pick Image" ng-init="init('assigned')">
+	<div class="bar bar-header bar-positive header-styling">
+		<button class="button button-icon ion-android-arrow-back" href back-button></button>
+		<h1 class="title">Upload Images</h1>
+		<button class="button button-icon ion-ios-home" href home-button></button>
+	</div>
+
+	<ion-content class="padding has-header">
+		<label class="item item-input">
+			<textarea ng-model="info" placeholder="Input additional information" rows="6"></textarea>
+		</label>
+
+		<button class="button button-block button-balanced" ng-click="selectImages()" ng-disabled="!ready">
+			Get Image
+		</button>
+		
+		<div class="item item-image item-text-wrap imagelist">
+			<ul ng-repeat="img in images">
+			    <li><img ng-src="{{img}}" ng-click="fullscreen(img)"></li>
+			</ul>
+		</div>
+		<br>
+		<button class="button button-block button-positive" ng-show="show" ng-click="submit(info)">
+			Submit Task
+		</button>
+		<br><br>
+	</ion-content>
+</ion-view>

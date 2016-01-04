@@ -1,0 +1,28 @@
+<ion-view view-title="Completed" data-ng-init="init(2)">
+	<div class="bar bar-header bar-positive header-styling">
+	  	<h1 class="title">已完成的任务</h1>
+	  	<button class="button button-icon ion-ios-home" href home-button></button>
+	</div>
+	<ion-content class="has-header">
+
+		<div class="list">
+           <a ng-repeat ="item in datalist" href="#" class="item item-icon-left" ng-click="changePage($index, 'completed', 1)">
+              <i class="icon ion-checkmark-round balanced"></i>
+              {{item.name}}
+           </a>
+        </div>
+
+        <div class="tabs-striped tabs-color-positive">
+			<div class="tabs tabs-icon-bottom">
+				<a ng-click="changeView('/assigned/current')" class="tab-item tabTasks active" href="#">
+					<i class="icon ion-email"></i>
+					Current
+				</a>
+				<a class="tab-item tabTasks" href="#">
+					<i class="icon ion-checkmark-round"></i> 
+					Completed
+				</a>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>
