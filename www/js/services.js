@@ -29,6 +29,41 @@ angular.module('starter.services', [])
 	}
 })
 
+.factory('azure', function($http, $httpParamSerializerJQLike) {
+	var prePath = 'http://apartmentservice.azurewebsites.net/';
+
+	return {
+		dataGET: function(path) {
+			var path = prePath + path; 
+			
+			return $http({
+				url: path,
+				method: 'GET'
+			})
+		},
+		dataPOST: function(path, data) {
+			var path = prePath + path; 
+			
+			return $http({
+				url: path,
+				method: 'POST',
+				data: $httpParamSerializerJQLike(data),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			})
+		},
+		dataPUT: function(path, data) {
+			var path = prePath + path; 
+			
+			return $http({
+				url: path,
+				method: 'PUT',
+				data: $httpParamSerializerJQLike(data),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			})
+		}
+	}
+})
+
 // Calls cordova functions
 .service('cordova', function($cordovaCamera, $cordovaFileTransfer) {
 	this.camera = function(){
@@ -59,15 +94,15 @@ angular.module('starter.services', [])
 })
 
 // Get the options for the subcategory
-.service('optionB', function() {
-	this.getData = function(optionA){
-		if(optionA == 'Choice1'){
+.service('category', function() {
+	this.getData = function(Subcategory){
+		if(Subcategory == 'Choice1'){
 			var Options = ['choice 1','choice 2', 'choice 3'];
-		}else if(optionA == 'Choice2'){
+		}else if(Subcategory == 'Choice2'){
 			var Options = ['choice 4','choice 5', 'choice 6', 'choice 7'];
-		}else if(optionA == 'Choice3'){
+		}else if(Subcategory == 'Choice3'){
 			var Options = ['choice 8','choice 9'];
-		}else if(optionA == 'Choice4'){
+		}else if(Subcategory == 'Choice4'){
 			var Options = ['choice 10','choice 11', 'choice 12', 'choice 13', 'choice 14'];
 		}else{
 			var Options = [];
@@ -75,8 +110,8 @@ angular.module('starter.services', [])
 		return Options;
 	}
 
-	this.getText = function(optionA){
-		if(optionA == ''){
+	this.getText = function(Category){
+		if(Category == ''){
 			var optionText = '';
 		}else{
 			var optionText = '- Choose Subcategory -';
@@ -87,25 +122,6 @@ angular.module('starter.services', [])
 
 // Get the settings when user changes view in tasks
 .service('changeView', function() {
-	this.getData = function(path, userType, user){
-		var data = {
-			user: user,
-			userType: userType
-		};
-
-		if(path =='current'){
-			if(userType == 'created_by'){
-				data.status = '< 2'
-			}else if(userType == 'responsible'){
-				data.status = '= 1'
-			}
-				
-		}else{
-			data.status = '= 2'
-		}
-		return data;
-	}
-
 	this.setActive = function(path){
 		if(path =='current'){
 			active = {
@@ -126,9 +142,9 @@ angular.module('starter.services', [])
 .service('submitData', function() {
 	this.check = function(formData){
 		if(formData){
-			if(formData.project_name && formData.optionA && formData.optionB && formData.address && formData.phone){
-				if(!formData.info){
-					formData.info = ' ';
+			if(formData.ProjectName && formData.Category && formData.Subcategory && formData.Address && formData.PhoneNumber){
+				if(!formData.Information){
+					formData.Information = ' ';
 				}
 				return formData;
 			}else{
@@ -159,15 +175,15 @@ angular.module('starter.services', [])
 // For info, converts numbers into text 
 .service('convertStatus', function() {
 	this.get = function(data){
-		if(data.status == 0){
-			data.status = 'Technican not assigned';
-		}else if(data.status == 1){
-			data.status = 'Currently assigned to ' + data.responsible;
-		}else if(data.status == 2){
-			data.status = 'Completed';
+		if(data.Status == 0){
+			data.Status = 'Technican not assigned';
+		}else if(data.Status == 1){
+			data.Status = 'Currently assigned to ' + data.Responsible;
+		}else if(data.Status == 2){
+			data.Status = 'Completed';
 		}else{
-			data.status = 'Unknown status';
+			data.Status = 'Unknown status';
 		}
-		return data.status;
+		return data.Status;
 	}
 });

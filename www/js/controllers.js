@@ -2,8 +2,9 @@ angular.module('starter.controllers', [])
 
 // Controls the login Menu
 .controller('loginController', 
-	function($scope, $http, $location, $sessionStorage, PHPget){	
+	function($scope, $http, $location, $sessionStorage, $http, PHPget){	
 
+	
 	// Gives login information for easier login,
 	// Only exist in the English Demo version.
 	$scope.logindata = {
@@ -15,7 +16,7 @@ angular.module('starter.controllers', [])
 	// If correct, saves the username for later use.
 	$scope.login = function(logindata){
 		if(logindata){
-			var data = PHPget.dataObject('login.php', logindata).success(function(data){
+			PHPget.dataObject('login.php', logindata).success(function(data){
 				if(data == 1){
 					$sessionStorage.user = (logindata.username).toLowerCase();
 					$location.path("/home");
@@ -55,7 +56,7 @@ angular.module('starter.controllers', [])
 
 // Controls all of the task pages
 .controller('listController', 
-	function($scope, $http, $location, $sessionStorage, PHPget, changeView){
+	function($scope, $http, $location, $sessionStorage, PHPget, changeView, azure){
 
 	// Goes to the correct info page
 	$scope.changePage = function(page, id){
@@ -64,37 +65,43 @@ angular.module('starter.controllers', [])
 
 	// Changes between current tasks and completed tasks
 	// Deletes the previous task lists, get the PHP data, and changes the navbar/icons.
-	$scope.changeView = function(path, userType){
+	$scope.changeView = function(statusType, status, userType){
 		delete $scope.datalist;
-		var dataPost = changeView.getData(path, userType, $sessionStorage.user);
+		var path = 'current';
+		if(status == 2 && statusType != 0){
+			var path = 'completed';
+		}
 		$scope.active = changeView.setActive(path);
 
-		// Call service to get the tasks depending on what the user has requested. 
-		PHPget.dataObject('getData.php', dataPost).success(function(data){
-			if(data != 'null'){
+		var url = userType +'/'+ $sessionStorage.user +'/'+ statusType +'/' + status;
+
+		azure.dataGET('api/assignments/'+ url).success(function(data){
+			if(data.length){
 				$scope.datalist = data;
 			}
-		});	
+		}); 
 	}
 })
 
 // Controls the info view
 .controller('infoController', 
-	function($scope, $http, $location, $sessionStorage, $stateParams, PHPget, convertStatus){
+	function($scope, $http, $location, $sessionStorage, $stateParams, PHPget, convertStatus, azure){
 	
-	//Get the info data from the server for the ID chosen
-	PHPget.data('getInfo.php', $stateParams.bit).success(function(data){
-		//Show the images, and complete button, if the conditions is right
-		if(data.imageCount1 > 0){
-			$scope.showCompleted = true;
-		}
-		if(data.status == 1){
+
+	azure.dataGET('api/assignments/'+ $stateParams.bit).success(function(data){
+		if(data.Status == 1){
 			$scope.showSubmit = true;
 		}
-
-		// Convert the status to a text format. 
-		data.status = convertStatus.get(data);
+		data.Status = convertStatus.get(data);	
+		
 		$scope.data = data;
+	});	
+
+	PHPget.data('getImageNames.php', $stateParams.bit).success(function(data){
+		if(data[1].length > 0){
+			$scope.showCompleted = true;
+		}
+		$scope.images = data;
 	});
 	
 	// For loop for images
@@ -103,36 +110,40 @@ angular.module('starter.controllers', [])
 	}
 
 	// Go here if user click on complete task.
-	$scope.completeTask = function(id){
-		$location.path("/assigned/image/" + id);
+	$scope.completeTask = function(formData){
+		$sessionStorage.formData = formData;
+		$location.path("/assigned/image/" + formData.ID);
 	}
 	
 })
 
 // Controls the create forms menu
 .controller('createController',  
-	function($scope, $rootScope, $http, $location, $sessionStorage, optionB, submitData){
+	function($scope, $filter, $rootScope, $http, $location, $sessionStorage, category, submitData){
 
 	// Get the data, if user has submitted, but not completed the task.
 	if($sessionStorage.formData){
 		var data = $sessionStorage.formData;
-		$scope.optionText = optionB.getText(data.optionA);
-		$scope.optionArray = optionB.getData(data.optionA);
+		$scope.optionText = category.getText(data.Category);
+		$scope.optionArray = category.getData(data.Category);
 		$scope.formData = data;
 	}
 	
 	// Get the options for the subcategory
-	$scope.optionChange = function(optionA) {
-		$scope.optionText = optionB.getText(optionA);
-		$scope.optionArray = optionB.getData(optionA);
+	$scope.optionChange = function(Category) {
+		$scope.optionText = category.getText(Category);
+		$scope.optionArray = category.getData(Category);
 	}
 
 	// Check if user has filled in the form and get the current user.
 	// Save it to sessionstorage and go to image
 	$scope.submitForm = function(formData){
 		var data = submitData.check(formData);
-		if(data.info){
-			data.created_by = $sessionStorage.user;
+		if(data.Information){
+			data.CreatedBy = $sessionStorage.user;
+			formData.Status = "0";
+			formData.TimeCreated = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm:ss");
+
 			$sessionStorage.formData = data;
 			$location.path("/create/image"); 
 		}else{
@@ -143,9 +154,9 @@ angular.module('starter.controllers', [])
 
 // Controls the two upload images pages
 .controller('imageController', 
-	function($scope, $rootScope, $location, $http, $sessionStorage, $stateParams, cordova, PHPget, submitData) {
+	function($scope, $rootScope, $location, $http, $sessionStorage, $httpParamSerializerJQLike, $stateParams, cordova, PHPget, azure) {
 
-	// Initialize the scope variables. 
+		// Initialize the scope variables. 
 	// Doesn't cache, hence run every time, because it is important that scope is synchronized with the server cache
 	$scope.init = function(page){
 		$scope.ready = false;
@@ -174,26 +185,46 @@ angular.module('starter.controllers', [])
 
 	// Get the properties, and save the data to server
 	$scope.submit = function(info){
-		var formData = submitData.create($sessionStorage.imagePage, $sessionStorage.formData, $stateParams.bit, $sessionStorage.user, info);	
+		var formData = $sessionStorage.formData;
+
+		if(formData.Status == "0"){
+			azure.dataPOST('api/assignments', formData).success(function(data){
+				updateImages('0', data, 'Task has been created');
+			});
+		}else{
+			formData.Status = '2';
+			formData.TechnicalInfo = info;
+			
+			azure.dataPUT('api/assignments/' + formData.ID, formData).success(function(data){
+				updateImages('1', formData, 'Task has been completed');
+			});
+		}
 		
-		PHPget.dataObject('createTask.php', formData).success(function(data){
-			alert(data);
-			$scope.images = [];
-			$sessionStorage.images = $scope.images;
-			$scope.count = 0;
-			delete $sessionStorage.formData;
-			$location.path('/home');
-		});
+		function updateImages(Type, data, message){
+			data.Type = Type;
+			data.User = $sessionStorage.user;
+			PHPget.dataObject('updateImages.php', data).success(function(data){
+				alert(message);	
+				$scope.images = [];
+				$sessionStorage.images = $scope.images;
+				$scope.count = 0;
+				delete $sessionStorage.formData;
+				$location.path('/home');
+			});
+		}
 	}
 
 	// Get the images from the phone
 	$scope.selectImages = function() {
+		console.log('test');
 		cordova.camera().then(function(imageUri) {
 	        $scope.show=true;
 			$scope.images.push(imageUri);
 			$sessionStorage.images = $scope.images;
 			$scope.fileUpload($scope.count, imageUri);
 			$scope.count++;
+	    }, function(error){
+	    	console.log(JSON.stringify(error));
 	    });
 	};
   

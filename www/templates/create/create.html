@@ -8,12 +8,12 @@
 			<div class="list list-inset">
 				<label class="item item-input">
 					<span class="input-label"> Project Name </span>
-					<input ng-model="formData.project_name" type="text" placeholder="Input the project name"></input>
+					<input ng-model="formData.ProjectName" type="text" placeholder="Input the project name"></input>
 				</label>
 
 				<label class="item item-input item-select">
 					<span class="input-label"> Category </span>
-					<select ng-model="formData.optionA" ng-change="optionChange(formData.optionA)">>
+					<select ng-model="formData.Category" ng-change="optionChange(formData.Category)">>
 						<option value="">- Choose Category -</option>
 						<option value="Choice1"> Choice 1</option>
 						<option value="Choice2"> Choice 2</option>
@@ -24,23 +24,23 @@
 
 				<label class="item item-input item-select">
 					<span class="input-label"> Subcategory</span>
-					<select ng-model="formData.optionB" ng-options="option for option in optionArray">
+					<select ng-model="formData.Subcategory" ng-options="option for option in optionArray">
 						<option value="">{{optionText}}</option>
 					</select>
 				</label>
 
 				<label class="item item-input">
 					<span class="input-label"> Address </span>
-					<input ng-model="formData.address" name="text" type="text" placeholder="Input customers address"></input>
+					<input ng-model="formData.Address" name="text" type="text" placeholder="Input customers address"></input>
 				</label>
 
 				<label class="item item-input">
 					<span class="input-label"> Phone </span>
-					<input ng-model="formData.phone" type="text" placeholder="Input customers number"></input>
+					<input ng-model="formData.PhoneNumber" type="text" placeholder="Input customers number"></input>
 				</label>
 
 				<label class="item item-input">
-					<textarea ng-model="formData.info" placeholder="Input additional information" rows="6"></textarea>
+					<textarea ng-model="formData.Information" placeholder="Input additional information" rows="6"></textarea>
 				</label>
 
 				<label class="item item-input padding">

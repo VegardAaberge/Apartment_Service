@@ -1,7 +1,7 @@
 <ion-view view-title="Info">
 	<div class="bar bar-header bar-positive header-styling">
 		<button class="button button-icon ion-android-arrow-back" href back-button></button>
-	  	<h1 class="title">Information ({{data.name}})</h1>
+	  	<h1 class="title">Information ({{data.ProjectName}})</h1>
 	  	<button class="button button-icon ion-ios-home" href home-button></button>
 	</div>
 	<ion-content class="has-header">
@@ -9,32 +9,34 @@
 			<div class="list">
 				<h3> Information </h3>
 				<label class="item card infoList item-text-wrap">
-					<span class="input-label"> Created by: {{data.created}} </span>
-					<span class="input-label"> Project Name: {{data.name}} </span>
-					<span class="input-label"> Address: {{data.address}} </span>
-					<span class="input-label"> Phone: {{data.phone}} </span>
-					<span class="input-label"> Information: {{data.information}} </span>
-					<span class="input-label"> Category: {{data.optionA}} </span>
-					<span class="input-label"> Subcategory: {{data.optionB}} </span>
-					<span class="input-label"> Time: {{data.time}} </span>
-					<span class="input-label"> Responsible: {{data.responsible}} </span>
-					<span class="input-label"> Technical Info: {{data.techinfo}} </span>
-					<span class="input-label"> Status: {{data.status}} </span>
+					<span class="input-label"> Created by: {{data.CreatedBy}}  </span>
+					<span class="input-label"> Project Name: {{data.ProjectName}} </span>
+					<span class="input-label"> Address: {{data.Address}} </span>
+					<span class="input-label"> Phone: {{data.PhoneNumber}} </span>
+					<span class="input-label"> Information: {{data.Information}} </span>
+					<span class="input-label"> Category: {{data.Category}} </span>
+					<span class="input-label"> Subcategory: {{data.Subcategory}} </span>
+					<span class="input-label"> Time: {{data.TimeCreated}} </span>
+					<span class="input-label"> Responsible: {{data.Responsible}} </span>
+					<span class="input-label"> Technical Info: {{data.TechnicalInfo}} </span>
+					<span class="input-label"> Status: {{data.Status}} </span>
 				</label>
 
+				
 				<div>
 					<h3> Created Images </h3>
-		      		<label class="item card item-image" ng-repeat="i in getNumber(data.imageCount0) track by $index">
-		      			<img ng-src="http://vegardaaberge.no/Maintenance/images/{{data.id}}/0/image{{$index}}.jpg">
+		      		<label class="item card item-image" ng-repeat="image in images[0]">
+		      			<img ng-src="http://vegardaaberge.no/Maintenance/{{image}}">
 		      		</label>
 		  		</div>
-
+		  		  
 		  		<div class="completed" ng-show="showCompleted">
 		  			<h3> Completed Images </h3>
-		      		<label class="item card item-image" ng-repeat="i in getNumber(data.imageCount1) track by $index">
-		      			<img ng-src="http://vegardaaberge.no/Maintenance/images/{{data.id}}/1/image{{$index}}.jpg">
+		      		<label class="item card item-image" ng-repeat="image in images[1]">
+		      			<img ng-src="http://vegardaaberge.no/Maintenance/{{image}}">
 		      		</label>
 		  		</div>
+				
 			</div>
 		</div>
 	</ion-content>
